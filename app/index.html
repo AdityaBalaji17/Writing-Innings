@@ -1,0 +1,118 @@
+<html>
+<body onload="fn1()">
+<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+<script>
+function fn1()
+{
+if(localStorage.getItem("playerName"))
+{
+document.getElementById("name").innerHTML=localStorage.getItem("playerName");
+}
+else
+{
+var playerName=prompt("Enter your name...");
+localStorage.setItem("playerName",playerName);
+document.getElementById("name").innerHTML=localStorage.getItem("playerName");
+}
+if(!localStorage.getItem("best"))
+localStorage.setItem("best",0);
+if(localStorage.getItem("matches"))
+{
+var matches=Number(localStorage.getItem("matches"))+1;
+localStorage.setItem("matches",matches);
+}
+else
+{
+localStorage.setItem("matches",1);
+}
+
+if(!localStorage.getItem("careerruns"))
+{
+
+localStorage.setItem("careerruns",0);
+}
+else
+{
+
+var cr=Number(localStorage.getItem("careerruns"));
+
+if(localStorage.getItem("runs"))
+cr+=Number(localStorage.getItem("runs"));
+localStorage.setItem("careerruns",cr);
+
+}
+
+if(Number(localStorage.getItem("best"))<Number(localStorage.getItem("runs")))
+localStorage.setItem("best",localStorage.getItem("runs"));
+
+localStorage.setItem("runs",0);
+localStorage.setItem("balls",0);
+
+document.getElementById("matches").innerHTML="Matches = "+localStorage.getItem("matches");
+document.getElementById("runs").innerHTML="Runs = "+localStorage.getItem("careerruns");
+document.getElementById("average").innerHTML="Average = "+Number(Number(localStorage.getItem("careerruns"))/Number(localStorage.getItem("matches"))).toFixed(2);
+document.getElementById("best").innerHTML="Best = "+localStorage.getItem("best");
+}
+function act(e)
+{
+document.getElementById("this").innerHTML="This Match<br>"+localStorage.getItem("runs")+"("+localStorage.getItem("balls")+")";
+var keynum;
+
+    if(window.event) { // IE                    
+      keynum = e.keyCode;
+    } else if(e.which){ // Netscape/Firefox/Opera                   
+      keynum = e.which;
+    }
+if(keynum==32||keynum==13)
+{
+var textarea=document.getElementById("ta");
+var text=textarea.value;
+var count=1;
+for(i=0;i<text.length;i++)
+{
+if(text[i]==' '||text[i]=='\n')
+{
+count++;
+}
+}	
+localStorage.setItem("wordcount",count);
+if(!localStorage.getItem("runs"))
+{
+localStorage.setItem("runs",0);
+localStorage.setItem("balls",0);
+}
+
+}
+
+}
+</script>
+<iframe src="index2.html" style="width:30%;height:100%;position:absolute;left:0%;top:0%"></iframe>
+<textarea id="ta" onkeydown="act(event)" rows="100" cols="100" style="position:absolute;left:30%;top:0%;width:40%;height:100%"></textarea>
+<div class="container" id="gg" style="position:absolute;left:70%;top:0%;width:30%;height:100%;z-index:12;">
+                   <section>
+				<form class="ac-custom ac-radio ac-fill" autocomplete="off">
+					<h2><span id="name">Aditya Balaji</span>
+					<br>
+					Career Stats
+					</h2>
+					</form>
+					<ul>
+					
+						<li><h3 id="matches"></h3></li>
+						<li><h3 id="runs"></h3></li>
+						<li><h3 id="average"></h3></li>
+						<li><h3 id="best"></h3></li>
+						
+					</ul>
+					<br>
+					<form class="ac-custom ac-radio ac-fill" autocomplete="off">
+			<h2 id="this">
+			</h2>	
+			</form>
+			</section>
+			
+            </div>
+
+</body>
+</html>

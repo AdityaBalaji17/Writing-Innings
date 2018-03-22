@@ -1,0 +1,357 @@
+      <!DOCTYPE html>
+      <html lang="en" >
+      <head>
+<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+      
+        <meta charset="utf-8" />
+
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+      </head>
+      <body onload="fn2()">
+        <style>
+          .sun-flower-button {
+  position: relative;
+  vertical-align: top;
+  width: 50%;
+  height: 60px;
+  padding: 0;
+  font-size: 22px;
+  color: white;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  background:#e2b607;
+  border: 0;
+  border-bottom: 2px solid #e2b607;
+  cursor: pointer;
+  -webkit-box-shadow: inset 0 -2px #e2b607;
+  box-shadow: inset 0 -2px #e2b607;
+}
+.sun-flower-button:active {
+  top: 1px;
+  outline: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+          
+        </style>
+
+        <!--<video src="videos/opening.mp4" id="opening" loop></video>-->
+       <!-- <div id="surface"></div>
+        <p id="title">CRICKET WORLD CUP</p>
+        <p id="choose">Choose your team</p>
+        <div class="w3-content" id="playerselect">
+          <img class="mySlides" src="img/BCCI.png" style="width:100%;height:100%;">
+          <img class="mySlides" src="img/ECB.png" style="width:50%;height:50%;position:absolute;top:25%;left:25%">
+          <img class="mySlides" src="img/CA.png" style="width:50%;height:50%;position:absolute;top:25%;left:25%">
+          <img class="mySlides" src="img/CSA.png" style="width:50%;height:50%;position:absolute;top:25%;left:25%">
+        </div>-->
+       
+        <script src="js/jquery-1.11.3.min.js"></script>
+		<script src="js/jquery.mobile-1.4.5.min.js"></script>
+        <script src="js/three.min.71.js"></script>
+		
+        <script src="js/defs.js"></script>
+        <script src="js/Player.js"></script>
+        <script src="js/three.min.71.js"></script>
+        <script src="js/THREEx.WindowResize.js"></script>
+        <script src="js/OrbitControls.js"></script>
+        <script src="js/stats.min.js"></script>
+        <script src="js/ColladaLoader.js"></script>
+           <script src="js/Animations.js"></script>
+        <script src="js/game1.js"></script>
+        
+		
+        <script>
+            (function() {
+    var supportTouch = $.support.touch,
+            scrollEvent = "touchmove scroll",
+            touchStartEvent = supportTouch ? "touchstart" : "mousedown",
+            touchStopEvent = supportTouch ? "touchend" : "mouseup",
+            touchMoveEvent = supportTouch ? "touchmove" : "mousemove";
+    $.event.special.swipeupdown = {
+        setup: function() {
+            var thisObject = this;
+            var $this = $(thisObject);
+            $this.bind(touchStartEvent, function(event) {
+                var data = event.originalEvent.touches ?
+                        event.originalEvent.touches[ 0 ] :
+                        event,
+                        start = {
+                            time: (new Date).getTime(),
+                            coords: [ data.pageX, data.pageY ],
+                            origin: $(event.target)
+                        },
+                        stop;
+
+                function moveHandler(event) {
+                    if (!start) {
+                        return;
+                    }
+                    var data = event.originalEvent.touches ?
+                            event.originalEvent.touches[ 0 ] :
+                            event;
+                    stop = {
+                        time: (new Date).getTime(),
+                        coords: [ data.pageX, data.pageY ]
+                    };
+
+                    // prevent scrolling
+                    if (Math.abs(start.coords[1] - stop.coords[1]) > 10) {
+                        event.preventDefault();
+                    }
+                }
+                $this
+                        .bind(touchMoveEvent, moveHandler)
+                        .one(touchStopEvent, function(event) {
+                    $this.unbind(touchMoveEvent, moveHandler);
+                    if (start && stop) {
+                        if (stop.time - start.time < 1000 &&
+                                (-start.coords[1] + stop.coords[1]) > 30 &&
+                                Math.abs(start.coords[0] - stop.coords[0]) < 75) {
+                            start.origin
+                                    .trigger("swipeupdown")
+                                    .trigger("swipedown");
+                        }
+                        else 
+                            {
+                            if(controlSetting=="swipe")
+                            {
+                                var den=stop.coords[0]-start.coords[0];
+                                if(den==0)
+                                den=den+0.2;
+                                angle=Math.atan((stop.coords[1]-start.coords[1])/(den))*180/Math.PI;
+                                if(start.coords[0]>stop.coords[0])
+                                    {
+                                        angle=180-angle;
+                                        turn=1;
+                                    }
+                                else 
+                                    {
+                                      //  alert(angle);
+                                     angle=180+angle;
+                                        turn=-1;
+                                    }
+                                start.origin.trigger("swipeupdown").trigger('dir');
+                            }
+                            }
+                    }
+                    start = stop = undefined;
+                });
+            });
+        }
+    };
+    $.each({
+        swipedown: "swipeupdown",
+        swipeup: "swipeupdown",
+        dir: "swipedown"
+    }, function(event, sourceEvent){
+        $.event.special[event] = {
+            setup: function(){
+                $(this).bind(sourceEvent, $.noop);
+            }
+        };
+    });
+
+})();
+        $(document).ready(function(){
+            
+           
+             $('body').on('swipedown',function(e){
+             document.getElementById("message").style.display="none";
+      mode=0;
+                 ballmesh.visible=true;
+                 ballmesh2.position.z=15;
+                 ballmesh2.position.x=10;
+                 ballmesh2.visible=false;
+                 ballmesh2.position.y=100;
+                 move=0;
+             
+                 x=120;
+                 if(players[0])
+                     {
+                         players[0].skeleton.bones[28].rotation.z=Math.PI*-80/180;
+                     }
+                 if(players[1])
+                 {
+                     players[1].position.y=220;
+                     players[1].position.x=20;
+                     players[1].position.z=-5;
+                 }
+  });
+          $('body').on('dir',function(e){
+          //    alert(angle);
+             
+              if(mode==0.5)
+                  {
+             
+             mode=1; 
+              shotdone=0;
+                  }
+          });
+          $('body').on("click",function(e){
+              if(view==1){
+    	var pWidth = $("body").innerWidth(); //use .outerWidth() if you want borders
+   var pOffset = $("body").offset(); 
+   var x = e.pageX;
+    if(pWidth/2 > x)
+        {
+            if(players[0])
+                {
+                    players[0].skeleton.bones[28].rotation.z+=5*Math.PI/180;
+                }
+        }
+    else
+        {
+         if(players[0])
+                {
+                    players[0].skeleton.bones[28].rotation.z-=5*Math.PI/180;
+                }
+        }
+              }
+  });
+           
+}); /*
+          var teamId=1;
+         
+
+          var slideIndex = 1;
+          showDivs(slideIndex);
+
+          function plusDivs(n) {
+            teamId=(teamId+n)%slideIndex;
+            showDivs((slideIndex += n));
+
+          }
+
+          function showDivs(n) {
+            var i;
+            var x = document.getElementsByClassName("mySlides");
+            if (n > x.length) {slideIndex = 1}
+              if (n < 1) {slideIndex = x.length}
+                for (i = 0; i < x.length; i++) {
+                 x[i].style.display = "none";
+               }
+               x[slideIndex-1].style.display = "block";
+             }
+            function store()
+            {
+                  var i=1;
+              var j=0;
+              var k=1;
+
+              var textureManager=new THREE.LoadingManager();
+              textureManager.onProgress=function(item,loaded,total){
+
+                if(loaded==total)
+                {
+                  document.getElementById("playerselect").style.display="none";
+                  document.getElementById("title").style.display="none";
+                  document.getElementById("choose").style.display="none";
+                  
+                  document.getElementById("surface").style.display="none";
+                  initializeLesson();
+                }
+
+              };
+              textureManager.onload=function()
+              {
+
+            // 
+          };
+          var textureLoader=new THREE.ImageLoader(textureManager);
+          var myTextureArray=[];
+          for(i=1;i<=4;i++)
+          {
+            var myTexture=new THREE.Texture();
+            myTextureArray.push(myTexture);
+            textureLoader.load("models/sa"+i+".png",
+              function(image){
+
+                myTexture.image=image;
+                materials[j++]=new THREE.MeshLambertMaterial({map:myTexture});
+              }
+              );   
+          }         
+
+            }
+             function fn1(e)
+             {
+              var keycode;
+              if (window.event)
+               keycode = window.event.keyCode;
+             else if (e)
+              keycode = e.which;
+            if(keycode==38||keycode==37)
+            {
+              plusDivs(-1);
+            }
+            else if(keycode==40||keycode==39)
+            {
+              plusDivs(+1);
+            }
+            else if(keycode==13)
+            {
+            store();
+        }
+      }*/
+      function fn2()
+      {
+      
+    /*  if(document.getElementById("r5").checked)
+      controlSetting="swipe";
+      else
+      	controlSetting="acc";
+      	document.getElementById("gg").style.display="none";
+      	offset=dir;*/
+      	initializeLesson();
+		setInterval(fn3,30000);
+      }
+	  function fn3()
+	  {
+	    document.getElementById("message").style.display="none";
+      mode=0;
+                 ballmesh.visible=true;
+                 ballmesh2.position.z=15;
+                 ballmesh2.position.x=10;
+                 ballmesh2.visible=false;
+                 ballmesh2.position.y=100;
+                 move=0;
+             
+                 x=120;
+                 if(players[0])
+                     {
+                         players[0].skeleton.bones[28].rotation.z=Math.PI*-80/180;
+                     }
+                 if(players[1])
+                 {
+                     players[1].position.y=220;
+                     players[1].position.x=20;
+                     players[1].position.z=-5;
+                 }
+	  }
+    </script>
+   
+<h1 id="message" style="position:absolute;top:8%;left:35%;z-index:10;color:green;display:none"></h1>
+<!--<div class="container" id="gg" style="height:100%;z-index:12;">
+                   <section>
+				<form class="ac-custom ac-radio ac-fill" autocomplete="off">
+					<h2>User input method</h2>
+					<ul>
+						<li><input id="r4" name="r1" type="radio" onclick="fn2()"><label for="r4"><p style="color:white">Accelerometer</p></label></li>
+						<li><input id="r5" name="r1" type="radio" onclick="fn2()"><label for="r5"><p style="color:white">Swipe</p></label></li>
+						
+						
+					</ul>
+					
+				</form>
+			</section>
+            </div>-->
+		<!--	<button type="button" style="position:absolute;top:90%;left:42%;z-index:10;color:green;" onclick="fn3()">Next Ball</button>-->
+             <audio id="shot" src="sounds/T.mp3"></audio>
+            <script src="js/svgcheckbx.js"></script>
+  </body>
+  </html>
